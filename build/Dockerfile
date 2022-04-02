@@ -92,8 +92,12 @@ RUN git clone https://github.com/tensorflow/models.git && \
     cd /app/models/research/ && \
     protoc object_detection/protos/*.proto --python_out=. && \
     cp object_detection/packages/tf2/setup.py . && \
-    python -m pip install .
+    python -m pip install --use-feature=2020-resolver .
+#    python -m pip install .
 
 # Install google cloud SDK
 RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=~/gcloud --disable-prompts
 ENV PATH="$PATH:/root/gcloud/google-cloud-sdk/bin"
+
+# Modify
+RUN pip install tensorflow-gpu==2.8.0
