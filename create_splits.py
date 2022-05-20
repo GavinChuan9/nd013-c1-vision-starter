@@ -21,17 +21,23 @@ def split(data_dir):
     # You should move the files rather than copy because of space limitations in the workspace.
     trainPath = os.path.join(data_dir, 'train')
     valPath = os.path.join(data_dir, 'val')
+    testPath = os.path.join(data_dir, 'test')
     
     tfrecords = glob.glob(os.path.join(data_dir,"training_and_validation", "*.tfrecord"))
 
-    # Produces a 75%, 25% split for training, validation
-    trainFiles = random.sample(tfrecords, int(len(tfrecords)*0.80))
+    # Produces a 80%, 10%, 10% split for training, validation and test sets.
+    trainFiles = random.sample(tfrecords, int(len(tfrecords)*0.8))
     for trainFile in trainFiles:
         os.popen('mv %s %s'%(trainFile, trainPath))
+    valAndTestFiles = list(set(tfrecords) - set(trainFiles))
 
-    valFiles = list(set(tfrecords) - set(trainFiles))
+    valFiles = random.sample(valAndTestFiles, int(len(valAndTestFiles)*0.5))
     for valFile in valFiles:
         os.popen('mv %s %s'%(valFile, valPath))
+    testFiles = list(set(valAndTestFiles) - set(valFiles))
+
+    for testFile in testFiles:
+        os.popen('mv %s %s'%(testFile, testPath))
     
 if __name__ == "__main__": 
     parser = argparse.ArgumentParser(description='Split data into training / validation / testing')
