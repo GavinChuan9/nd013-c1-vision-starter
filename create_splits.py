@@ -25,7 +25,7 @@ def split(data_dir):
     tfrecords = glob.glob(os.path.join(data_dir,"training_and_validation", "*.tfrecord"))
 
     # Produces a 75%, 25% split for training, validation
-    trainFiles = random.sample(tfrecords, int(len(tfrecords)*0.75))
+    trainFiles = random.sample(tfrecords, int(len(tfrecords)*0.80))
     for trainFile in trainFiles:
         os.popen('mv %s %s'%(trainFile, trainPath))
 
