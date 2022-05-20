@@ -146,7 +146,7 @@ This section should contain a brief description of the project and what we are t
 ### Set up
 Please reference [README.md](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EDA/build/README.md) to set pu local environment.<br />
 <br />
-Doing evaluation process many occur this error:<br />
+Doing evaluation process may occur this error:<br />
 ```
 TypeError: 'numpy.float64' object cannot be interpreted as an integer
 /usr/local/lib/python3.8/dist-packages/numpy/core/function_base.py, line 120
