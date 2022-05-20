@@ -163,7 +163,31 @@ can fix it.<br />
 
 ### Dataset
 #### Dataset analysis
-This section should contain a quantitative and qualitative description of the dataset. It should include images, charts and other visualizations.
+The dataset was recorded in different weather conditions such as sunny, night, rainfall, foggy, etc.<br />
+(The red box represents the vehicle, the green box represents the pedestrian, the blue box represents the cyclist)<br />
+* Sunny:<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/sunny.png?raw=true)<br />
+* Night:<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/night.png?raw=true)<br />
+* Rain:<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/rain.png?raw=true)<br />
+* Foggy:<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/foggy.png?raw=true)<br />
+
+I randomly select 1000 images from dataset for statistics, the following statistics show that:<br />
+* The vehicle was the largest at 77.0%.<br />
+* The pedestrian was the second-largest at 22.4%.<br />
+* The cyclist was the lowest at 0.6%.<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsClass.png?raw=true)<br />
+
+I also interested in the size of the objects, the following statistics show that:<br />
+* The Small was the largest at about 75.6% ~ 82.4%<br />
+* The Medium was the second-largest at about 15.3 ~ 19.4%.<br />
+* The Large was the lowest at about 2.3% ~ 5.0%.<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsVehicle.png?raw=true)<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsPedestrain.png?raw=true)<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsCyclist.png?raw=true)<br />
+
 #### Cross validation
 This section should detail the cross validation strategy and justify your approach.
 
