@@ -146,27 +146,62 @@ This section should contain a brief description of the project and what we are t
 ### Set up
 Please reference [README.md](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EDA/build/README.md) to set pu local environment.<br />
 <br />
-Doing evaluation process many occur this error:<br />
+Doing evaluation process may occur this error:<br />
 ```
 TypeError: 'numpy.float64' object cannot be interpreted as an integer
 /usr/local/lib/python3.8/dist-packages/numpy/core/function_base.py, line 120
 ```
 changed the code at function_base.py (line 120) from<br />
-```
+```python
 num = operator.index(num)
 ```
 to<br />
-```
+```python
 num = operator.index(int(num))
 ```
 can fix it.<br />
 
 ### Dataset
 #### Dataset analysis
-This section should contain a quantitative and qualitative description of the dataset. It should include images, charts and other visualizations.
-#### Cross validation
-This section should detail the cross validation strategy and justify your approach.
+The dataset was recorded in different weather conditions such as sunny, night, rainfall, foggy, etc.<br />
+(The red box represents the vehicle, the blue box represents the pedestrian, the green box represents the cyclist)<br />
+* Sunny:<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/sunny.png?raw=true)<br />
+* Night:<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/night.png?raw=true)<br />
+* Rain:<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/rain.png?raw=true)<br />
+* Foggy:<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/foggy.png?raw=true)<br />
 
+I randomly select 1000 images from dataset for statistics, the following statistics show that:<br />
+* The vehicle was the largest at 77.0%.<br />
+* The pedestrian was the second-largest at 22.4%.<br />
+* The cyclist was the lowest at 0.6%.<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsClass.png?raw=true)<br />
+
+I also interested in the size of the objects, the following statistics show that:<br />
+* The Small was the largest at about 75.6% ~ 82.4%<br />
+* The Medium was the second-largest at about 15.3 ~ 19.4%.<br />
+* The Large was the lowest at about 2.3% ~ 5.0%.<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsVehicle.png?raw=true)<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsPedestrain.png?raw=true)<br />
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsCyclist.png?raw=true)<br />
+
+#### Cross validation
+I will divide 97 tfrecords from training_and_validation folder into 80(train):20(val) ratio.<br />
+If the dataset is large, i will try to divide them into 90(train):10(val) ratio.<br />
+Merge dataset in training_and_validation and test folders, and split them may appears out of proportion.<br />
+Because the data size are too different.
+* training_and_validation folder: each given tfrecord's size is about 3M Bytes,and has about 20 samples.<br />
+* test folder: each given tfrecord's size is about 30M Bytes,and has about 200 samples.<br />
+
+I using following code to count number of samples in a TFRecord file
+```python
+import tensorflow.compat.v1 as tf
+tf.enable_eager_execution()
+sum(1 for _ in tf.data.TFRecordDataset("your/file/path/segment-xxx_with_camera_labels.tfrecord"))
+```
 ### Training
 #### Reference experiment
 This section should detail the results of the reference experiment. It should includes training metrics and a detailed explanation of the algorithm's performances.
