@@ -152,11 +152,11 @@ TypeError: 'numpy.float64' object cannot be interpreted as an integer
 /usr/local/lib/python3.8/dist-packages/numpy/core/function_base.py, line 120
 ```
 changed the code at function_base.py (line 120) from<br />
-```
+```python
 num = operator.index(num)
 ```
 to<br />
-```
+```python
 num = operator.index(int(num))
 ```
 can fix it.<br />
@@ -164,7 +164,7 @@ can fix it.<br />
 ### Dataset
 #### Dataset analysis
 The dataset was recorded in different weather conditions such as sunny, night, rainfall, foggy, etc.<br />
-(The red box represents the vehicle, the green box represents the pedestrian, the blue box represents the cyclist)<br />
+(The red box represents the vehicle, the blue box represents the pedestrian, the green box represents the cyclist)<br />
 * Sunny:<br />
 ![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/sunny.png?raw=true)<br />
 * Night:<br />
@@ -189,8 +189,19 @@ I also interested in the size of the objects, the following statistics show that
 ![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsCyclist.png?raw=true)<br />
 
 #### Cross validation
-This section should detail the cross validation strategy and justify your approach.
+I will divide 97 tfrecords from training_and_validation folder into 80(train):20(val) ratio.<br />
+If the dataset is large, i will try to divide them into 90(train):10(val) ratio.<br />
+Merge dataset in training_and_validation and test folders, and split them may appears out of proportion.<br />
+Because the data size are too different.
+* training_and_validation folder: each given tfrecord's size is about 3M Bytes,and has about 20 samples.<br />
+* test folder: each given tfrecord's size is about 30M Bytes,and has about 200 samples.<br />
 
+I using following code to count number of samples in a TFRecord file
+```python
+import tensorflow.compat.v1 as tf
+tf.enable_eager_execution()
+sum(1 for _ in tf.data.TFRecordDataset("your/file/path/segment-xxx_with_camera_labels.tfrecord"))
+```
 ### Training
 #### Reference experiment
 This section should detail the results of the reference experiment. It should includes training metrics and a detailed explanation of the algorithm's performances.
