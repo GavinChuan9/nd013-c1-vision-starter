@@ -230,10 +230,9 @@ Average Recall     (AR) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] | 0.102
 <img src="https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EXP/image/RefAnimation.gif?raw=true" width="50%" height="50%"/>
 
 #### Improve on the reference
+#### Experiment 0
 Data augmentation is a technique that can be used to expand the size of a training dataset,<br />
 training a model with a large dataset will improve the performance.<br />
-
-#### Experiment 0
 I add/adjust the data augmentation as follows:<br />
 
 Data augmentations       | Values | Reason
@@ -242,7 +241,7 @@ random_horizontal_flip   |   0.5  | Vehicles, pedestrians, and cyclist are almos
 random_adjust_brightness |   0.3  | Objects can still be identify under different brightness
 random_rgb_to_gray       |   0.2  | It helps to to identify objects of different colors
 
-I add/adjust the data augmentation as follows, the overall performance are slightly improved, but still hard to detect objects.<br />
+Training and validation result as follows, the overall performance are slightly improved, but still hard to detect objects.<br />
 The animation produced by Exp0 is same as Ref, so, i will not upload animation in order to save storage space.<br />
 
 Metrics                                                                  | Values(Ref) | Values(Exp0)
@@ -262,3 +261,39 @@ Average Recall     (AR) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] |    0.
 
 ![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EXP/image/Exp0Loss.png?raw=true)<br />
 
+#### Experiment 1
+From the Experiment 0 results, i thinks loss function was stuck at local minima.<br />
+So i change optimizer as follows, it helps to find out global minima.<br />
+
+```
+optimizer {
+    adam_optimizer {
+        learning_rate {
+            exponential_decay_learning_rate {
+                initial_learning_rate: 0.001
+                decay_steps: 500
+            }
+        }
+    }
+}
+```
+
+Training and validation result as follows, the overall performance are improved.
+
+Metrics                                                                  | Values(Exp0)| Values(Exp1)|
+-------------------------------------------------------------------------|:-----------:|:-----------:|
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area=   all \| maxDets=100 ] |    0.006    |    0.072    |
+Average Precision  (AP) @[ IoU=0.50      \| area=   all \| maxDets=100 ] |    0.019    |    0.154    |
+Average Precision  (AP) @[ IoU=0.75      \| area=   all \| maxDets=100 ] |    0.002    |    0.060    |
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area= small \| maxDets=100 ] |    0.001    |    0.024    |
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area=medium \| maxDets=100 ] |    0.027    |    0.169    |
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] |    0.039    |    0.273    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets=  1 ] |    0.005    |    0.024    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets= 10 ] |    0.024    |    0.090    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets=100 ] |    0.057    |    0.138    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area= small \| maxDets=100 ] |    0.013    |    0.067    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=medium \| maxDets=100 ] |    0.164    |    0.299    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] |    0.167    |    0.400    |
+
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EXP/image/Exp1Loss.png?raw=true)<br />
+<img src="https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EXP/image/Exp1Animation.gif?raw=true" width="50%" height="50%"/>
