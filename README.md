@@ -138,10 +138,8 @@ Finally, you can create a video of your model's inferences for any tf record fil
 python inference_video.py --labelmap_path label_map.pbtxt --model_path experiments/reference/exported/saved_model --tf_record_path /data/waymo/testing/segment-12200383401366682847_2552_140_2572_140_with_camera_labels.tfrecord --config_path experiments/reference/pipeline_new.config --output_path animation.gif
 ```
 
-## Submission Template
-
-### Project overview
-This section should contain a brief description of the project and what we are trying to achieve. Why is object detection such an important component of self driving car systems?
+## Project overview
+This project will use machine learning methods to identify objects in images.
 
 ### Set up
 Please reference [README.md](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EDA/build/README.md) to set pu local environment.<br />
@@ -189,8 +187,7 @@ I also interested in the size of the objects, the following statistics show that
 ![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/master/image/StatisticsCyclist.png?raw=true)<br />
 
 #### Cross validation
-I will divide 97 tfrecords from training_and_validation folder into 80(train):20(val) ratio.<br />
-If the dataset is large, i will try to divide them into 90(train):10(val) ratio.<br />
+I will divide 97 tfrecords from training_and_validation folder into 80(train):10(val):10(test) ratio.<br />
 Merge dataset in training_and_validation and test folders, and split them may appears out of proportion.<br />
 Because the data size are too different.
 * training_and_validation folder: each given tfrecord's size is about 3M Bytes,and has about 20 samples.<br />
@@ -200,11 +197,101 @@ I using following code to count number of samples in a TFRecord file
 ```python
 import tensorflow.compat.v1 as tf
 tf.enable_eager_execution()
-sum(1 for _ in tf.data.TFRecordDataset("your/file/path/segment-xxx_with_camera_labels.tfrecord"))
+sum(1 for _ in tf.data.TFRecordDataset("your/tfrecord/path/segment-xxx_with_camera_labels.tfrecord"))
 ```
 ### Training
 #### Reference experiment
-This section should detail the results of the reference experiment. It should includes training metrics and a detailed explanation of the algorithm's performances.
+The training and validation results are as follows:<br />
+Metrics                                                                  | Values
+-------------------------------------------------------------------------|:------:|
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area=   all \| maxDets=100 ] | 0.000
+Average Precision  (AP) @[ IoU=0.50      \| area=   all \| maxDets=100 ] | 0.001
+Average Precision  (AP) @[ IoU=0.75      \| area=   all \| maxDets=100 ] | 0.000
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area= small \| maxDets=100 ] | 0.000
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area=medium \| maxDets=100 ] | 0.000
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] | 0.003
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets=  1 ] | 0.000
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets= 10 ] | 0.003
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets=100 ] | 0.008
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area= small \| maxDets=100 ] | 0.000
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=medium \| maxDets=100 ] | 0.005
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] | 0.102
+
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EXP/image/RefLoss.png?raw=true)<br />
+* classification loss: Still not stable until the end of training
+* localization loss: Loss has converged.
+* regularization loss: Loss is very high, may be stuck at local minima.
+* total loss: Overall, loss is very high.
+* Training and validation results quite match, did not occur overfitting, so the split ratio no need to adjust.
+* AR and AP are very low, it means that hard to detect objects.
+
+<img src="https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EXP/image/RefAnimation.gif?raw=true" width="50%" height="50%"/>
 
 #### Improve on the reference
-This section should highlight the different strategies you adopted to improve your model. It should contain relevant figures and details of your findings.
+#### Experiment 0
+Data augmentation is a technique that can be used to expand the size of a training dataset,<br />
+training a model with a large dataset will improve the performance.<br />
+I add/adjust the data augmentation as follows:<br />
+
+Data augmentations       | Values | Reason
+-------------------------|:------:|:------:|
+random_horizontal_flip   |   0.5  | Vehicles, pedestrians, and cyclist are almost symmetrical, it helps to to increase datasets
+random_adjust_brightness |   0.3  | Objects can still be identify under different brightness
+random_rgb_to_gray       |   0.2  | It helps to to identify objects of different colors
+
+Training and validation result as follows, the overall performance are slightly improved, but still hard to detect objects.<br />
+The animation produced by Exp0 is same as Ref, so, i will not upload animation in order to save storage space.<br />
+
+Metrics                                                                  | Values(Ref) | Values(Exp0)
+-------------------------------------------------------------------------|:-----------:|:-----------:|
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area=   all \| maxDets=100 ] |    0.000    |    0.006    |
+Average Precision  (AP) @[ IoU=0.50      \| area=   all \| maxDets=100 ] |    0.001    |    0.019    |
+Average Precision  (AP) @[ IoU=0.75      \| area=   all \| maxDets=100 ] |    0.000    |    0.002    |
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area= small \| maxDets=100 ] |    0.000    |    0.001    |
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area=medium \| maxDets=100 ] |    0.000    |    0.027    |
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] |    0.003    |    0.039    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets=  1 ] |    0.000    |    0.005    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets= 10 ] |    0.003    |    0.024    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets=100 ] |    0.008    |    0.057    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area= small \| maxDets=100 ] |    0.000    |    0.013    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=medium \| maxDets=100 ] |    0.005    |    0.164    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] |    0.102    |    0.167    |
+
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EXP/image/Exp0Loss.png?raw=true)<br />
+
+#### Experiment 1
+From the Experiment 0 results, i thinks loss function was stuck at local minima.<br />
+So i change optimizer as follows, it helps to find out global minima.<br />
+
+```
+optimizer {
+    adam_optimizer {
+        learning_rate {
+            exponential_decay_learning_rate {
+                initial_learning_rate: 0.001
+                decay_steps: 500
+            }
+        }
+    }
+}
+```
+
+Training and validation result as follows, the overall performance are improved.
+
+Metrics                                                                  | Values(Exp0)| Values(Exp1)|
+-------------------------------------------------------------------------|:-----------:|:-----------:|
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area=   all \| maxDets=100 ] |    0.006    |    0.072    |
+Average Precision  (AP) @[ IoU=0.50      \| area=   all \| maxDets=100 ] |    0.019    |    0.154    |
+Average Precision  (AP) @[ IoU=0.75      \| area=   all \| maxDets=100 ] |    0.002    |    0.060    |
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area= small \| maxDets=100 ] |    0.001    |    0.024    |
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area=medium \| maxDets=100 ] |    0.027    |    0.169    |
+Average Precision  (AP) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] |    0.039    |    0.273    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets=  1 ] |    0.005    |    0.024    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets= 10 ] |    0.024    |    0.090    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=   all \| maxDets=100 ] |    0.057    |    0.138    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area= small \| maxDets=100 ] |    0.013    |    0.067    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area=medium \| maxDets=100 ] |    0.164    |    0.299    |
+Average Recall     (AR) @[ IoU=0.50:0.95 \| area= large \| maxDets=100 ] |    0.167    |    0.400    |
+
+![alt text](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EXP/image/Exp1Loss.png?raw=true)<br />
+<img src="https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EXP/image/Exp1Animation.gif?raw=true" width="50%" height="50%"/>
