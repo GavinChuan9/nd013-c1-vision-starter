@@ -138,10 +138,8 @@ Finally, you can create a video of your model's inferences for any tf record fil
 python inference_video.py --labelmap_path label_map.pbtxt --model_path experiments/reference/exported/saved_model --tf_record_path /data/waymo/testing/segment-12200383401366682847_2552_140_2572_140_with_camera_labels.tfrecord --config_path experiments/reference/pipeline_new.config --output_path animation.gif
 ```
 
-## Submission Template
-
-### Project overview
-This section should contain a brief description of the project and what we are trying to achieve. Why is object detection such an important component of self driving car systems?
+## Project overview
+This project will use machine learning methods to identify objects in images.
 
 ### Set up
 Please reference [README.md](https://github.com/GavinChuan9/nd013-c1-vision-starter/blob/EDA/build/README.md) to set pu local environment.<br />
