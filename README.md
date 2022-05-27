@@ -159,6 +159,33 @@ num = operator.index(int(num))
 ```
 can fix it.<br />
 
+#### Open Docker
+```bash
+sudo docker run --gpus all -v /home/yourname/nd013-c1-vision-starter/:/app/project/ --network=host -ti project-dev bash
+```
+
+#### Open multiple terminals in docker
+```bash
+sudo docker ps # Show the container_id
+sudo docker exec -it <container_id> bash
+```
+
+#### Open Jupyter notebook in docker
+```
+jupyter notebook --allow-root
+```
+
+#### Open nvidia-smi
+```bash
+watch -n 1 -d nvidia-smi # Query every 1 second
+```
+
+#### Open Tensorboard in docker
+```bash
+tensorboard --logdir /app/project/experiments/reference/ # Display single run in TensorBoard
+tensorboard --logdir_spec=ref:/app/project/experiments/reference/,e0:/app/project/experiments/experiment0 # Display different runs in TensorBoard
+```
+
 ### Dataset
 #### Dataset analysis
 The dataset was recorded in different weather conditions such as sunny, night, rainfall, foggy, etc.<br />
